@@ -118,7 +118,15 @@ def delete_duplicates(root_path, simulate, additional_suff)
 
 
 args = sys.argv
-path = args[1]
+try:
+ path = args[1]
+except:
+ print("You did not supply a folder path. Leaving...")
+ exit()
+if not os.path.exists(path):
+ print("You did not supply a valid path. Leaving...")
+ exit()
+
 if len(args) > 3:
  try:
   additional_suff = json.loads(args[3].translate({ord('.'):None}))

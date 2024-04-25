@@ -107,6 +107,7 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
  
  if simulate:
   with open('log.csv','a') as log_file:
+   log_file.write('File name,Full file path,MD5 hash,keep\\delete\n')
    for i in idx:
     log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',keep\n')
    for i in del_idx:

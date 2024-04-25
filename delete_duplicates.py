@@ -157,6 +157,7 @@ if len(args) > 2:
   simulate=(args[2]==True)
   if simulate:
    print ("Performing simulation...")
+   print ("If you wish work in delete mode, please run: python delete_duplicates.py [Path to folder] True")
    u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
   else:
    additional_suff=[]

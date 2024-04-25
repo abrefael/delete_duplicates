@@ -159,6 +159,7 @@ if len(args) > 2:
    print ("Performing simulation...")
    u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
   else:
+   additional_suff=[]
    print ("Warning!!!")
    print("You are not running in simulation mode!!! This **will** delete files from your system!!! Make sure you know what you're doing!!!")
    u = input("Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong\n")

@@ -1,75 +1,73 @@
-def delete_duplicates(root_path, simulate = True, additional_suff = [])
+import sys
 
+def delete_duplicates(root_path, simulate, additional_suff)
  import os
  import hashlib
- 
  # Declare a list of file extensions and append the additional extesions supplied by user
  SUFF = [
- '.JPG',
- '.PNG',
- '.GIF',
- '.WEBP',
- '.TIFF',
- '.PSD',
- '.RAW',
- '.BMP',
- '.HEIF',
- '.INDD',
- '.JPEG',
- '.SVG',
- '.AI',
- '.EPS',
- '.PDF',
- '.jpg',
- '.png',
- '.gif',
- '.webp',
- '.tiff',
- '.psd',
- '.raw',
- '.bmp',
- '.heif',
- '.indd',
- '.jpeg',
- '.svg',
- '.ai',
- '.eps',
- '.pdf',
- '.mp4',
- '.mov',
- '.avi',
- '.wmv',
- '.flv',
- '.f4v',
- '.mkv',
- '.webm',
- '.mpeg',
- '.3gp',
- '.3g2',
- '.ogv',
- '.m4v',
- '.MP4',
- '.MOV',
- '.AVI',
- '.WMV',
- '.FLV',
- '.F4V',
- '.MKV',
- '.WEBM',
- '.MPEG',
- '.3GP',
- '.3G2',
- '.OGV',
- '.M4V',
+ 'JPG',
+ 'PNG',
+ 'GIF',
+ 'WEBP',
+ 'TIFF',
+ 'PSD',
+ 'RAW',
+ 'BMP',
+ 'HEIF',
+ 'INDD',
+ 'JPEG',
+ 'SVG',
+ 'AI',
+ 'EPS',
+ 'PDF',
+ 'jpg',
+ 'png',
+ 'gif',
+ 'webp',
+ 'tiff',
+ 'psd',
+ 'raw',
+ 'bmp',
+ 'heif',
+ 'indd',
+ 'jpeg',
+ 'svg',
+ 'ai',
+ 'eps',
+ 'pdf',
+ 'mp4',
+ 'mov',
+ 'avi',
+ 'wmv',
+ 'flv',
+ 'f4v',
+ 'mkv',
+ 'webm',
+ 'mpeg',
+ '3gp',
+ '3g2',
+ 'ogv',
+ 'm4v',
+ 'MP4',
+ 'MOV',
+ 'AVI',
+ 'WMV',
+ 'FLV',
+ 'F4V',
+ 'MKV',
+ 'WEBM',
+ 'MPEG',
+ '3GP',
+ '3G2',
+ 'OGV',
+ 'M4V',
  ] + additional_suff
-
  # Initiate lists of file names, hashes and their full paths
  files=[]
  hashes=[]
  paths=[]
  del_idx=[]
  idx=[]
- 
  # Recursively scan a folder and return all filenames
  def scandir_recursive(directory):
   for entry in os.scandir(directory):
@@ -86,7 +84,7 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
  base_paths=list(scandir_recursive(root_path))
  for path in base_paths:
   # If file extension is in the list of extensions the file name, its hash and its full path are written into three lists
-  if '.'+path.split('.')[-1] in set(SUFF):
+  if path.split('.')[-1] in set(SUFF):
    paths.append(path)
    files.append(path.split('/')[-1])
    hashes.append(hashlib.md5(open(path,'rb').read()).hexdigest())
@@ -118,3 +116,46 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
   for i in del_idx:
    os.remove(paths[i])
 
+
+args = sys.argv
+path = args[1]
+if len(args) > 3:
+ try:
+  additional_suff = json.loads(args[3].translate({ord('.'):None}))
+ except:
+  print("I see you didn't input the list of additional extensions correctly")
+  print("If you want to add extensions you should add as argument with single quotes, while the extensions has double quotes and separated by commas")
+  print("(For example: '[\"docx\", \"dcm\" ,\"dicom\"]')")
+  print("We will continue without the extension list...")
+  u = input("(Please hit Enter to continue or Ctrl+C to stop execution, if you think something went wrong)\n")
+  additional_suff=[]
+
+if len(args) > 2:
+ if '[' in args[2]:
+  try:
+   additional_suff = json.loads(args[2].translate({ord('.'):None}))
+  except:
+   print("I see you didn't input the list of additional extensions correctly")
+   print("If you want to add extensions you should add as argument with single quotes, while the extensions has double quotes and separated by commas")
+   print("(For example: '[\"docx\", \"dcm\" ,\"dicom\"]')")
+   print("We will continue without the extension list...")
+   u = input("Please hit Enter to continue or Ctrl+C to stop execution, if you think something went wrong\n")
+   additional_suff=[]
+  simulate = True
+  print ("Performing simulation...")
+  u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
+ else:
+  simulate=(args[2]==True)
+  if simulate:
+   print ("Performing simulation...")
+   u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
+  else:
+   print ("Warning!!!")
+   print("You are not running in simulation mode!!! This **will** delete files from your system!!! Make sure you know what you're doing!!!")
+   u = input("Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong\n")
+else:
+ additional_suff=[]
+ simulate = True
+ print ("Performing simulation...")
+ u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
+delete_duplicates(path, simulate, additional_suff)

@@ -3,6 +3,7 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
  import os
  import hashlib
  
+ # Declare a list of file extensions and append the additional extesions supplied by user
  SUFF = [
  '.JPG',
  '.PNG',
@@ -61,12 +62,15 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
  '.OGV',
  '.M4V',
  ] + additional_suff
- 
+
+ # Initiate lists of file names, hashes and their full paths
  files=[]
  hashes=[]
  paths=[]
+ del_idx=[]
+ idx=[]
  
- 
+ # Recursively scan a folder and return all filenames
  def scandir_recursive(directory):
   for entry in os.scandir(directory):
    if entry.is_dir(follow_symlinks=False):
@@ -74,37 +78,34 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
    else:
     yield entry.path
  
+ # Find all indices of an item in list
+ def find_indices(lst, itm):
+  return [idx for idx, value in enumerate(lst) if value == itm]
  
- def find_indices(list_to_check, item_to_find):
-  return [idx for idx, value in enumerate(list_to_check) if value == item_to_find]
- 
- 
+ # Create list of all files in root folder and its subfolders
  base_paths=list(scandir_recursive(root_path))
  for path in base_paths:
+  # If file extension is in the list of extensions the file name, its hash and its full path are written into three lists
   if '.'+path.split('.')[-1] in set(SUFF):
    paths.append(path)
    files.append(path.split('/')[-1])
    hashes.append(hashlib.md5(open(path,'rb').read()).hexdigest())
- 
- del_idx=[]
- idx=[]
- 
+
+ # Chcke if files that have the same name also have the same hash, if they do, their indices ar written into two lists:
+ # one has only the files that are to be deleted, and the other has all the files that will be kept.
  for file in files:
   n=find_indices(files,file)
   if len(n)>0:
    for i in n:
     for j in n:
      if hashes[i]==hashes[j] and j>i:
-      del_idx.append(j)
-      idx.append(i)
+      if not j in set (del_idx):
+       del_idx.append(j)
+      if not i in set (del_idx) & set (idx))):
+       idx.append(i)
  
- 
- idx = list(set(idx))
- del_idx = list(set(del_idx))
- for i in set(idx) & set(del_idx):
-  idx.remove(i)
- 
- 
+ # If requested simulation only: write a csv file with file names, their full paths their hashes and whether they are kept or deleted
+ # You can look at the csv file, and check that the files to be deleted are indeed the same as the one kept.
  if simulate:
   with open('log.csv','a') as log_file:
    log_file.write('File name,Full file path,MD5 hash,keep\\delete\n')
@@ -112,6 +113,7 @@ def delete_duplicates(root_path, simulate = True, additional_suff = [])
     log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',keep\n')
    for i in del_idx:
     log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',delete\n')
+ # Otherwise, delete the duplicate files!
  else:
   for i in del_idx:
    os.remove(paths[i])

@@ -112,10 +112,11 @@ def delete_duplicates(root_path, simulate, additional_suff):
     log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',keep\n')
    for i in del_idx:
     log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',delete\n')
+  return 1
  # Otherwise, delete the duplicate files!
  else:
-  for i in del_idx:
-   os.remove(paths[i])
+  return paths
+  
 
 
 args = sys.argv
@@ -169,4 +170,13 @@ else:
  simulate = True
  print ("Performing simulation...")
  u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
-delete_duplicates(path, simulate, additional_suff)
+paths = delete_duplicates(path, simulate, additional_suff)
+if not simulate:
+ print ("Done performing simulation... You ca now check the log file at " + os.getwcd() + "/log.csv")
+ u = input("(Do you want to continue with files deletion? [y\\N]\n")
+ if u = 'y':
+  print ("Warning!!!")
+  print("You are not running in simulation mode!!! This **will** delete files from your system!!! Make sure you know what you're doing!!!")
+  u = input("Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong\n")
+  for file_path in paths:
+   os.remove(file_path)

@@ -1,7 +1,6 @@
-import sys
+import sys, os
 
-def delete_duplicates(root_path, simulate, additional_suff)
- import os
+def delete_duplicates(root_path, simulate, additional_suff):
  import hashlib
  # Declare a list of file extensions and append the additional extesions supplied by user
  SUFF = [
@@ -99,9 +98,11 @@ def delete_duplicates(root_path, simulate, additional_suff)
      if hashes[i]==hashes[j] and j>i:
       if not j in set (del_idx):
        del_idx.append(j)
-      if not i in set (del_idx) & set (idx))):
        idx.append(i)
- 
+   idx = list(set(idx))
+   for i in idx:
+    if i in del_idx:
+     idx.remove(i)
  # If requested simulation only: write a csv file with file names, their full paths their hashes and whether they are kept or deleted
  # You can look at the csv file, and check that the files to be deleted are indeed the same as the one kept.
  if simulate:

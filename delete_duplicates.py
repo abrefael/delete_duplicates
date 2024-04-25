@@ -1,4 +1,4 @@
-def delete_duplicates(root_path, simulate = True)
+def delete_duplicates(root_path, simulate = True, additional_suff = [])
 
  import os
  import hashlib
@@ -60,7 +60,7 @@ def delete_duplicates(root_path, simulate = True)
  '.3G2',
  '.OGV',
  '.M4V',
- ]
+ ] + additional_suff
  
  files=[]
  hashes=[]

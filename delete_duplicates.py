@@ -109,10 +109,10 @@ def delete_duplicates(root_path, simulate, additional_suff):
   with open('log.csv','a') as log_file:
    log_file.write('File name,Full file path,MD5 hash,keep\\delete\n')
    for i in idx:
-    log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',keep\n')
+    log_file.write('"' + files[i] + '","' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',keep\n')
    for i in del_idx:
-    log_file.write(files[i] + ',"' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',delete\n')
-  return 1
+    log_file.write('"' + files[i] + '","' + paths[i].replace(root_path,'.') + '",' + hashes[i] + ',delete\n')
+   return 1
  # Otherwise, delete the duplicate files!
  else:
   return paths
@@ -171,12 +171,21 @@ else:
  print ("Performing simulation...")
  u = input("(Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong)\n")
 paths = delete_duplicates(path, simulate, additional_suff)
-if not simulate:
- print ("Done performing simulation... You ca now check the log file at " + os.getwcd() + "/log.csv")
+if simulate:
+ print ("Done performing simulation... Please check the log file at " + os.getwcd() + "/log.csv")
+ print ("If you think that a file should not be deleted, please remove its row from the file")
+ print ("then save the file")
  u = input("(Do you want to continue with files deletion? [y\\N]\n")
- if u = 'y':
+ if u == 'y':
   print ("Warning!!!")
   print("You are not running in simulation mode!!! This **will** delete files from your system!!! Make sure you know what you're doing!!!")
   u = input("Please hit Enter to start or Ctrl+C to stop execution, if you think something went wrong\n")
-  for file_path in paths:
-   os.remove(file_path)
+  with open('log.csv','r') as log_file:
+   log = log_file.read()
+   rows = log.split('\n')
+   for row in rows:
+    row_data = row.split('",')
+	if row_data[2]=='delete':
+	 os.remove(row_data[1][1:])
+
+
